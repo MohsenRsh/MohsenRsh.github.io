@@ -56,18 +56,35 @@
 
         <div class="misc">
             <div class="misc-divider"></div>
-            <p class="misc-label">Miscellaneous</p>
-            <p class="misc-desc">Here I share my current challenges and the resolutions I find for them. Read, use, or tell me something interesting about it via LinkedIn.</p>
-            <!-- To add a post: copy the .post-card block below, update href, title, summary, and date -->
-            <div class="post-cards">
-                <a href="ruv-seq.html" class="post-card">
-                    <p class="post-card-title">When the pretty plot isn't the answer: my RUV-seq journey</p>
-                    <p class="post-card-summary">I was obsessed with making the PCA look right. Then I stopped decorating and started analyzing.</p>
-                    <span class="post-card-date">May 2026</span>
-                </a>
+            <button class="misc-toggle" aria-expanded="false">
+                <span class="misc-label">Miscellaneous</span>
+                <span class="misc-chevron">▼</span>
+            </button>
+            <div class="misc-body" id="misc-body">
+                <p class="misc-desc">Here I share challenges I face in my work and the resolutions I find for them. Not tutorials. Not polished guides. Just honest write-ups of what I tried, what broke, and what I learned from it. If you read something and it sparks a thought, reach out via LinkedIn.</p>
+                <!-- To add a post: copy one .post-card block below, update href, title, summary, and date -->
+                <div class="post-cards">
+                    <a href="ruv-seq.html" class="post-card">
+                        <p class="post-card-title">When the pretty plot isn't the answer: my RUV-seq journey</p>
+                        <p class="post-card-summary">I was obsessed with making the PCA look right. Then I stopped decorating and started analyzing.</p>
+                        <div class="post-card-footer">
+                            <span class="post-card-date">May 2026</span>
+                            <span class="post-card-arrow">→</span>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.querySelector('.misc-toggle').addEventListener('click', function () {
+            var body = document.getElementById('misc-body');
+            var expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', String(!expanded));
+            body.classList.toggle('open');
+        });
+    </script>
 </body>
 
 </html>
