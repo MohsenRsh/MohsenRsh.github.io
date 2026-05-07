@@ -94,6 +94,149 @@ h1 {
     color: #ffffff;
 }
 
+/* ---- Homepage: Miscellaneous section ---- */
+.misc {
+    margin-top: 2.8rem;
+    text-align: center;
+}
+
+.misc-divider {
+    width: 36px;
+    height: 1px;
+    background: var(--border);
+    margin: 0 auto 2rem;
+}
+
+.misc-label {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: #ffffff;
+    margin-bottom: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
+.misc-desc {
+    font-size: 0.875rem;
+    color: var(--accent);
+    line-height: 1.75;
+    margin-bottom: 1.3rem;
+}
+
+.misc-posts {
+    list-style: none;
+    padding: 0;
+}
+
+.misc-posts li {
+    margin-bottom: 0.5rem;
+}
+
+.misc-posts a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+}
+
+.misc-posts a:hover {
+    color: #ffffff;
+}
+
+/* ---- Blog post page ---- */
+body.post-page {
+    display: block;
+    padding: 3.5rem 1.5rem 5rem;
+}
+
+.post-container {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.back-link {
+    display: inline-block;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    margin-bottom: 2.5rem;
+    transition: color 0.15s ease;
+}
+
+.back-link:hover {
+    color: #ffffff;
+}
+
+.post-title {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 1.55rem;
+    color: #ffffff;
+    line-height: 1.45;
+    margin-bottom: 2rem;
+    white-space: normal;
+    letter-spacing: -0.01em;
+}
+
+.post-heading {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--accent);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.01em;
+    white-space: normal;
+}
+
+.post-p {
+    font-size: 0.95rem;
+    color: var(--accent);
+    line-height: 1.85;
+    margin-bottom: 1.25rem;
+}
+
+.post-p strong {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.post-p em {
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.post-figure {
+    margin: 2.2rem 0;
+    text-align: center;
+}
+
+.post-figure img {
+    max-width: 100%;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.post-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+}
+
+.post-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.post-footer a:hover {
+    color: #ffffff;
+}
+
+/* ---- Responsive ---- */
 @media (max-width: 480px) {
     h1 {
         font-size: 1.5rem;
@@ -102,5 +245,9 @@ h1 {
     .photo {
         width: 116px;
         height: 116px;
+    }
+
+    .post-title {
+        font-size: 1.3rem;
     }
 }

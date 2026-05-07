@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When the Pretty Plot Isn't the Answer — Mohsen Rastgoo Shahrestani</title>
+    <meta name="description" content="A write-up of my RUV-seq journey: from chasing pretty PCAs to understanding stabilization and safety.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="post-page">
+    <div class="post-container">
+        <a href="index.html" class="back-link">← back</a>
+
+        <h1 class="post-title">When the Pretty Plot Isn't the Answer: My RUV-seq Journey</h1>
+
+        <p class="post-p">I have been working on fine-tuning my bulk RNA-seq analysis for my current project. This is the first chapter of what I hope becomes a blog series. I enjoy documenting, learning, and maybe helping someone else figure out a similar challenge.</p>
+
+        <p class="post-p">So, I went through a refinement strategy called RUV-seq, Remove Unwanted Variation. What I dealt with these days was beyond my expectations. It felt like a benchmark journey, and it kept pulling me toward finding the most beautiful result. But I learned something. Don't chase what looks beautiful. Look at what can actually explain itself.</p>
+
+        <h2 class="post-heading">The PCA Trap</h2>
+
+        <p class="post-p">When you apply RUV to your data, naturally you want to see if it worked. And the first thing everyone does, myself included, is look at the PCA plot. Did my groups separate? Did the clusters tighten? It's visual, it's intuitive, and it feels like a verdict.</p>
+
+        <p class="post-p">I was obsessed with it. I kept tweaking parameters, changing the number of negative control genes, trying different thresholds. All while staring at PCA plots and asking myself: <em>does this one look better than the last one?</em></p>
+
+        <p class="post-p">The problem is, "better" in a PCA is subjective. You're eyeballing dots on a 2D projection of thousands of dimensions. Two people can look at the same PCA and disagree on whether it improved. And worse, a PCA that looks clean might actually be the result of over-correction, where you've removed real biology and forced the groups apart artificially.</p>
+
+        <p class="post-p">I realized I was decorating, not analyzing.</p>
+
+        <h2 class="post-heading">What RUV Actually Gives You</h2>
+
+        <p class="post-p">So I took a step back and asked: what does RUV actually produce? Not what does it <em>show</em> me. What does it <em>give</em> me?</p>
+
+        <p class="post-p">The answer is simple. For each sample in your dataset, RUV estimates a single number, called W<sub>1</sub>. That's it. One number per sample. This number represents how much of the "unwanted variation" each sample carries. Later, you hand this number to your differential expression model as a covariate, and the model accounts for it.</p>
+
+        <p class="post-p">So the real question isn't "does the PCA look nicer?" The real question is: <strong>is that number reliable?</strong></p>
+
+        <h2 class="post-heading">The Stability Question</h2>
+
+        <p class="post-p">Here's where it gets interesting. To run RUV, you need to give it a set of negative control genes. Genes you believe are not differentially expressed, so any variation in them must be technical, not biological. The more confidently non-changing genes you provide, the better RUV can estimate the unwanted variation.</p>
+
+        <p class="post-p">But how many genes is enough?</p>
+
+        <p class="post-p">I tried a range, from a few hundred to several thousand. And at each count, I recorded the W<sub>1</sub> values RUV estimated for every sample. Then I plotted them: x-axis is the number of genes, y-axis is the W<sub>1</sub> value, one line per sample.</p>
+
+        <figure class="post-figure">
+            <img src="w1_deseq_stability_plot.png" alt="W1 stability across negative control gene counts — per-sample estimates converge past 4000 genes">
+        </figure>
+
+        <p class="post-p">What I saw was clear. Below roughly 3500 genes, the W<sub>1</sub> estimates were chaotic. Lines crossing, jumping, reversing. The estimate was unstable, meaning it was driven by whichever specific genes happened to be included, not by a consistent underlying signal. But past 4000 genes, the lines flattened out. Each sample settled into its own stable value. Adding more genes didn't change the answer anymore.</p>
+
+        <p class="post-p">That's the stabilization point. And that's where you can trust the estimate.</p>
+
+        <h2 class="post-heading">But Is It Safe?</h2>
+
+        <p class="post-p">There's one more thing to check, and to be honest, I think this is the part most people skip. Even if your W<sub>1</sub> estimate is stable, you need to ask: <strong>is it capturing technical variation, or is it secretly tracking my biology?</strong></p>
+
+        <p class="post-p">Think about it. If all your treated samples happen to get high W<sub>1</sub> values and all your controls get low values, then W<sub>1</sub> isn't estimating a batch effect. It's estimating your treatment. Putting it in the model would subtract biology and call it noise. You would lose real signal and never know it. Your DE results would come back looking clean, and you would trust them, and they would be wrong.</p>
+
+        <p class="post-p">You can test this with a simple statistical test, an ANOVA, which asks: are the W<sub>1</sub> values different between my experimental groups, or are they scattered independently of condition? In my case, the answer was clear. No association. The unwanted variation was genuinely unwanted.</p>
+
+        <h2 class="post-heading">What I Learned</h2>
+
+        <p class="post-p">I came into this looking for the perfect PCA. I left with something less photogenic but more honest: a stabilization curve, a statistical test, and the confidence that my correction is doing what it claims to do.</p>
+
+        <p class="post-p">The PCA still exists. It still shows group structure. But it's not my evidence anymore. It's just a visualization. The evidence is in the diagnostics.</p>
+
+        <p class="post-p">If you're working with RUV-seq and you find yourself tweaking thresholds to make the PCA look right, stop. Look at what RUV is actually giving you. Check if it's stable. Check if it's safe. Let the numbers decide, not the dots.</p>
+
+        <p class="post-p">Sometimes the best answer isn't the most beautiful one. It's the one that can explain itself.</p>
+
+        <p class="post-footer">This is part of a series where I document challenges and resolutions from my ongoing bioinformatics work. If you found this useful or have faced something similar, I'd love to hear from you. Reach out via <a href="https://linkedin.com/in/mohsenrsh">LinkedIn</a>.</p>
+    </div>
+</body>
+
+</html>
