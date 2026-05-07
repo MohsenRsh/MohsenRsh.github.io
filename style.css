@@ -5,7 +5,7 @@
 }
 
 :root {
-    --bg: #0d1b2e;
+    --bg: #102030;
     --text: #f0f2f5;
     --text-muted: #8896a8;
     --accent: #c8d0dc;
@@ -123,24 +123,49 @@ h1 {
     margin-bottom: 1.3rem;
 }
 
-.misc-posts {
-    list-style: none;
-    padding: 0;
+/* To add a post: copy one .post-card block in index.html and update href, title, summary, date */
+.post-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: left;
 }
 
-.misc-posts li {
-    margin-bottom: 0.5rem;
-}
-
-.misc-posts a {
-    color: var(--text-muted);
+.post-card {
+    display: block;
     text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.15s ease;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1.1rem 1.25rem;
+    transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.misc-posts a:hover {
+.post-card:hover {
+    border-color: #2e4460;
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.post-card-title {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 0.9rem;
     color: #ffffff;
+    line-height: 1.4;
+    margin-bottom: 0.35rem;
+}
+
+.post-card-summary {
+    font-size: 0.84rem;
+    color: var(--accent);
+    line-height: 1.6;
+    margin-bottom: 0.55rem;
+}
+
+.post-card-date {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
 }
 
 /* ---- Blog post page ---- */
