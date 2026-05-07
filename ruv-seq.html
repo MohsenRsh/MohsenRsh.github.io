@@ -42,7 +42,7 @@
 
         <p class="post-p">So I took a step back and asked: what does RUV actually produce? Not what does it <em>show</em> me. What does it <em>give</em> me?</p>
 
-        <p class="post-p">The answer is simple. For each sample in your dataset, RUV estimates a single number, called W<sub>1</sub>. That's it. One number per sample. This number represents how much of the "unwanted variation" each sample carries. Later, you hand this number to your differential expression model as a covariate, and the model accounts for it.</p>
+        <p class="post-p">The answer is simple. For each sample in your dataset, RUV estimates a single number, called W_1. That's it. One number per sample. This number represents how much of the "unwanted variation" each sample carries. Later, you hand this number to your differential expression model as a covariate, and the model accounts for it.</p>
 
         <p class="post-p">So the real question isn't "does the PCA look nicer?" The real question is: <strong>is that number reliable?</strong></p>
 
@@ -52,23 +52,23 @@
 
         <p class="post-p">But how many genes is enough?</p>
 
-        <p class="post-p">I tried a range, from a few hundred to several thousand. And at each count, I recorded the W<sub>1</sub> values RUV estimated for every sample. Then I plotted them: x-axis is the number of genes, y-axis is the W<sub>1</sub> value, one line per sample.</p>
+        <p class="post-p">I tried a range, from a few hundred to several thousand. And at each count, I recorded the W_1 values RUV estimated for every sample. Then I plotted them: x-axis is the number of genes, y-axis is the W_1 value, one line per sample.</p>
 
         <figure class="post-figure">
             <img src="w1_deseq_stability_plot.png" alt="W1 stability across negative control gene counts — per-sample estimates converge past 4000 genes">
         </figure>
 
-        <p class="post-p">What I saw was clear. Below roughly 3500 genes, the W<sub>1</sub> estimates were chaotic. Lines crossing, jumping, reversing. The estimate was unstable, meaning it was driven by whichever specific genes happened to be included, not by a consistent underlying signal. But past 4000 genes, the lines flattened out. Each sample settled into its own stable value. Adding more genes didn't change the answer anymore.</p>
+        <p class="post-p">What I saw was clear. Below roughly 3500 genes, the W_1 estimates were chaotic. Lines crossing, jumping, reversing. The estimate was unstable, meaning it was driven by whichever specific genes happened to be included, not by a consistent underlying signal. But past 4000 genes, the lines flattened out. Each sample settled into its own stable value. Adding more genes didn't change the answer anymore.</p>
 
         <p class="post-p">That's the stabilization point. And that's where you can trust the estimate.</p>
 
         <h2 class="post-heading">But Is It Safe?</h2>
 
-        <p class="post-p">There's one more thing to check, and to be honest, I think this is the part most people skip. Even if your W<sub>1</sub> estimate is stable, you need to ask: <strong>is it capturing technical variation, or is it secretly tracking my biology?</strong></p>
+        <p class="post-p">There's one more thing to check, and to be honest, I think this is the part most people skip. Even if your W_1 estimate is stable, you need to ask: <strong>is it capturing technical variation, or is it secretly tracking my biology?</strong></p>
 
-        <p class="post-p">Think about it. If all your treated samples happen to get high W<sub>1</sub> values and all your controls get low values, then W<sub>1</sub> isn't estimating a batch effect. It's estimating your treatment. Putting it in the model would subtract biology and call it noise. You would lose real signal and never know it. Your DE results would come back looking clean, and you would trust them, and they would be wrong.</p>
+        <p class="post-p">Think about it. If all your treated samples happen to get high W_1 values and all your controls get low values, then W_1 isn't estimating a batch effect. It's estimating your treatment. Putting it in the model would subtract biology and call it noise. You would lose real signal and never know it. Your DE results would come back looking clean, and you would trust them, and they would be wrong.</p>
 
-        <p class="post-p">You can test this with a simple statistical test, an ANOVA, which asks: are the W<sub>1</sub> values different between my experimental groups, or are they scattered independently of condition? In my case, the answer was clear. No association. The unwanted variation was genuinely unwanted.</p>
+        <p class="post-p">You can test this with a simple statistical test, an ANOVA, which asks: are the W_1 values different between my experimental groups, or are they scattered independently of condition? In my case, the answer was clear. No association. The unwanted variation was genuinely unwanted.</p>
 
         <h2 class="post-heading">What I Learned</h2>
 
