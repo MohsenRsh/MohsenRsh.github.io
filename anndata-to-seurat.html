@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When the conversion should be one line but it's not — Mohsen Rastgoo Shahrestani</title>
+    <meta name="description" content="I tried every conversion tool. They all failed. So I did it by hand.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mohsenrsh.github.io/anndata-to-seurat.html">
+    <meta property="og:title" content="When the conversion should be one line but it's not: AnnData to Seurat">
+    <meta property="og:description" content="I tried every conversion tool. They all failed. So I did it by hand.">
+    <meta property="og:image" content="https://mohsenrsh.github.io/profile-photo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="post-page">
+    <div class="post-container">
+        <a href="index.html" class="back-link">← back</a>
+
+        <h1 class="post-title">When the conversion should be one line but it's not: AnnData to Seurat</h1>
+
+        <p class="post-p">If you are struggling to convert your AnnData object into a Seurat object, this post is for you. Not because I found a magic function. Because I tried all the magic functions and none of them worked. What worked was taking things apart and putting them back together manually.</p>
+
+        <p class="post-p">Let me walk you through what happened.</p>
+
+        <h2 class="post-heading">The Promise</h2>
+
+        <p class="post-p">In theory, converting between Python and R single-cell formats is a solved problem. You have packages for it. SeuratDisk reads .h5ad files. sceasy converts between AnnData and SingleCellExperiment. zellkonverter does the same through basilisk. Pick one, call a function, done.</p>
+
+        <p class="post-p">That is the promise. Here is the reality.</p>
+
+        <h2 class="post-heading">What Actually Happened</h2>
+
+        <p class="post-p">I had a processed AnnData object from a Scanpy-based pipeline. Integrated, normalized, annotated. Real work had been done on this data. I needed to bring it into R as a Seurat object to run a deconvolution method that only exists in R.</p>
+
+        <p class="post-p">I tried SeuratDisk first. It failed. I tried zellkonverter. It failed. I tried sceasy. It also failed. I tried reticulate, thinking maybe I could load the object through Python inside R and convert it on the fly. That did not work either.</p>
+
+        <p class="post-p">The errors were not always the same, but the pattern was. These tools expect a clean, simple .h5ad file. Mine was not simple. It had layers, it had complex metadata, and the normalized counts were stored as floats that the converters could not handle cleanly.</p>
+
+        <p class="post-p">I spent two days on this before I stopped and asked myself what I was actually doing.</p>
+
+        <h2 class="post-heading">Why Not Just Re-Process in R?</h2>
+
+        <p class="post-p">This is the first thing people suggest. Just load the raw counts in R and redo the normalization and integration there.</p>
+
+        <p class="post-p">But think about what that means. The upstream pipeline, the integration, the normalization, all of it was done carefully in Python with specific parameters and decisions. That work is not something you reproduce casually in a different language and expect to get the same result. You would introduce differences, and then your downstream analysis is not actually running on the same data anymore.</p>
+
+        <p class="post-p">So keeping the normalized data matters. That is the whole point of the conversion. You want what was already computed, not a new version of it.</p>
+
+        <h2 class="post-heading">The Resolution</h2>
+
+        <p class="post-p">I stopped trying to make the converters work and went manual. The idea is simple. Instead of converting the whole .h5ad object at once, you export each piece separately in formats that R has no trouble reading.</p>
+
+        <p class="post-p">First, I made a lightweight copy of the AnnData. Only the things I actually needed: the count matrix in X, the cell metadata in obs, and the gene metadata in var. No extra layers, no obsm embeddings, nothing that would confuse the export.</p>
+
+        <p class="post-p">Then I exported the matrix in Matrix Market format. This is a plain text sparse matrix format that R's Matrix package reads natively. The key detail here: I had to be careful with how the floats were written. Scientific notation versus decimal notation matters. The normalized values that broke the h5ad converters worked fine in Matrix Market because you control the formatting.</p>
+
+        <p class="post-p">For the metadata, I exported obs and var as CSV files. Simple, portable, no surprises.</p>
+
+        <p class="post-p">On the R side, I read the Matrix Market file with Matrix::readMM, loaded the CSVs as data frames, and assembled a Seurat object by hand. Counts slot, metadata, gene names. It is not elegant, but every piece is accounted for and nothing is silently dropped.</p>
+
+        <h2 class="post-heading">What I Learned</h2>
+
+        <p class="post-p">The tools that promise one-line conversion are built for simple cases. If your AnnData has been through a real pipeline with integration and normalization, you are probably not in a simple case. And when the converter fails silently or throws cryptic errors, you can spend days debugging someone else's code. Or you can spend an afternoon doing the conversion yourself, piece by piece, and actually understand what ended up in your Seurat object.</p>
+
+        <p class="post-p">I built a small repository with the scripts for this workflow. Python side for the export, R side for the import. If you are stuck on the same problem, clone it and adapt it. The link is below.</p>
+
+        <p class="post-p">Sometimes the right answer is not finding the tool that does it for you. It is realizing that doing it yourself, manually, with full control, is faster and safer than trusting a black box that was not built for your data.</p>
+
+        <p class="post-footer">
+            GitHub repository: <a href="https://github.com/MohsenRsh/anndata-to-seurat">MohsenRsh/anndata-to-seurat</a><br><br>
+            This is part of a series where I document challenges and resolutions from my ongoing bioinformatics work. If you found this useful or have faced something similar, I'd love to hear from you. Reach out via <a href="https://linkedin.com/in/mohsenrsh">LinkedIn</a>.
+        </p>
+    </div>
+</body>
+
+</html>
