@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Data Analysis We Trust: how one talk rewired my workflow — Mohsen Rastgoo Shahrestani</title>
+    <meta name="description" content="A Nextflow Summit keynote gave me the answer I'd been quietly looking for on how to structure a bioinformatics project — so I rebuilt my workflow around it.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mohsenrsh.github.io/in-data-analysis-we-trust.html">
+    <meta property="og:title" content="In Data Analysis We Trust: how one talk rewired my workflow">
+    <meta property="og:description" content="A Nextflow Summit keynote gave me the answer I'd been quietly looking for on how to structure a bioinformatics project — so I rebuilt my workflow around it.">
+    <meta property="og:image" content="https://mohsenrsh.github.io/in-data-analysis-we-trust-card.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="post-page">
+    <div class="post-container">
+        <a href="index.html" class="back-link">← back</a>
+
+        <h1 class="post-title">In Data Analysis We Trust: how one talk rewired my workflow</h1>
+
+        <div class="post-figure">
+            <img src="in-data-analysis-we-trust-card.png" alt="In Data Analysis We Trust — how one talk rewired my workflow">
+        </div>
+
+        <p class="post-p">For a while now I've had a quiet background question running through every project: am I organizing this right? Is there a "correct" way to lay out a project, name files, manage environments, and document an analysis, or am I just making it up as I go and hoping nobody asks to reproduce my results?</p>
+
+        <p class="post-p">I never found a satisfying answer. Until I watched Ming "Tommy" Tang's keynote from Nextflow Summit 2026, "In Data Analysis We Trust." It is, as far as I can tell, exactly the talk I had been looking for without knowing it existed.</p>
+
+        <h2 class="post-heading">The Talk That Named My Problem</h2>
+
+        <p class="post-p">The talk opens with a number that should stop anyone in bioinformatics: roughly 95% of bioinformatics analyses cannot be reproduced. Not because the science is wrong, but because the data is gone, the scripts were never shared, the methods are too vague to redo, or the environment has quietly drifted since the analysis was run.</p>
+
+        <p class="post-p">It then walks through a real case, the Duke cancer trial scandal, where sloppy data handling, not bad statistics, led to patients being enrolled in a clinical trial based on flawed bioinformatics. That's the moment the talk stopped being about tidiness and started being about responsibility.</p>
+
+        <p class="post-p">From there it lays out six pillars: tidy data, project organization and file naming, version control, environment management, literate programming and automation, and clean code. Each one is presented not as an abstract best practice but as the direct fix for a specific, named failure mode. That framing is what made it click for me. I wasn't being told to be tidier. I was being shown exactly which habit prevents which disaster.</p>
+
+        <h2 class="post-heading">Six Pillars, One Document</h2>
+
+        <p class="post-p">Right after watching it, I sat down with Claude and went through each pillar, one at a time, and turned it into a concrete policy: ISO 8601 dates everywhere, dated and non-destructive result folders, no more <code>_final</code> or <code>_v2</code> file names, <code>data/</code> made read-only with <code>chmod u-w -R</code>, <code>here()</code> instead of absolute paths, tidy-data rules for spreadsheets (including the infamous SEPT2/MARCH1 Excel gene-symbol autocorrect trap), commit-often-push-daily as the Git golden rule, renv and uv with committed lock files, Quarto/R Markdown for literate analysis, and the Rule of Three for turning copy-pasted code into functions.</p>
+
+        <p class="post-p">All of it went into my global <code>CLAUDE.md</code>, the file Claude Code reads at the start of every session in any project on my machine. It's no longer a list of vague intentions. It's policy, and Claude applies it by default.</p>
+
+        <h2 class="post-heading">Checking My Work, Three Times</h2>
+
+        <p class="post-p">Before I trusted it, I wanted to make sure I hadn't just absorbed buzzwords from the slide titles and missed the substance. So I asked Claude to read through the entire 48-slide deck and cross-check every section of my <code>CLAUDE.md</code> against what was actually said, slide by slide. I had it do this three times, in three separate passes, specifically looking for anything I'd added that wasn't actually in the talk versus things I'd genuinely picked up from it.</p>
+
+        <p class="post-p">Almost everything matched, down to specific details like the Six Git Commands slide, the Reproducibility Spectrum (Level 1 through Level 4), and the "LLM as orchestrator, not analyst" principle with fixed seeds. The one addition that wasn't directly from the talk was my own note about a <code>docs/context/PROVENANCE.md</code> file for tracking where raw data comes from. That's my own working note, not Tommy's, and I'm keeping it labeled that way.</p>
+
+        <h2 class="post-heading">What Changed</h2>
+
+        <p class="post-p">The biggest change isn't any single rule. It's that I stopped doubting. For years I'd second-guess my own documentation, my folder structures, my naming conventions, always wondering if there was a "real" standard I was missing. Now there is one, it's written down, it's specific, and I can point to the exact slide that justifies each choice.</p>
+
+        <p class="post-p">Tommy's stated goal with this talk is to educate and to give people something they can actually use. So I'm sharing my <code>CLAUDE.md</code> publicly, with a README explaining where each section came from and how I verified it. If you've been carrying the same quiet question I was, maybe it helps you too.</p>
+
+        <p class="post-footer">
+            Talk recording: <a href="https://www.youtube.com/watch?v=c9QJm8N67BA">Tommy Tang — "In Data Analysis We Trust" (Nextflow Summit 2026)</a><br>
+            Slides: <a href="https://divingintogeneticsandgenomics.com/talk/2026-nextflow-summit-boston/">divingintogeneticsandgenomics.com</a><br>
+            Original LinkedIn post: <a href="https://www.linkedin.com/feed/update/urn:li:activity:7461418985788526592/">linkedin.com</a><br>
+            My CLAUDE.md repository: <a href="https://github.com/MohsenRsh/reproducible-bioinformatics-claude">MohsenRsh/reproducible-bioinformatics-claude</a><br><br>
+            This is part of a series where I document challenges and resolutions from my ongoing bioinformatics work. If you found this useful or have faced something similar, I'd love to hear from you. Reach out via <a href="https://linkedin.com/in/mohsenrsh">LinkedIn</a>.
+        </p>
+    </div>
+</body>
+
+</html>
